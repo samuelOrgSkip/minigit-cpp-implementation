@@ -690,6 +690,80 @@ void diff(const std::string& file1_path, const std::string& file2_path) {
     }
 }
 
+// Lists all branches and marks the current branch
+void list_branches()
+{
+    std::string current_branch = "";
+    std::ifstream head_file(".minigit/HEAD");
+    std::string head_ref;
+    std::getline(head_file, head_ref);
+    head_file.close();
+
+    if (head_ref.rfind("ref: refs/heads/", 0) == 0) {
+        current_branch = head_ref.substr(16);
+    }
+
+    std::string refs_path = ".minigit/refs/heads";
+    if (!fs::exists(refs_path)) {
+        std::cout << "No branches found." << std::endl;
+        return;
+    }
+
+    for (const auto& entry : fs::directory_iterator(refs_path)) {
+        std::string branch_name = entry.path().filename().string();
+        if (branch_name == current_branch) {
+            std::cout << "* " << branch_name << std::endl;
+        } else {
+            std::cout << "  " << branch_name << std::endl;
+        }
+    }
+}
+
+// Shows current branch and repository status
+void status()
+{
+    std::ifstream head_file(".minigit/HEAD");
+    std::string head_ref;
+    std::getline(head_file, head_ref);
+    head_file.close();
+
+    if (head_ref.rfind("ref: refs/heads/", 0) == 0) {
+        std::string current_branch = head_ref.substr(16);
+        std::cout << "On branch " << current_branch << std::endl;
+    } else {
+        std::cout << "HEAD detached at " << head_ref.substr(0, 7) << std::endl;
+    }
+
+    // Check if there are staged files
+    std::ifstream index_file(".minigit/index");
+    std::string line;
+    bool has_staged_files = false;
+    while (std::getline(index_file, line)) {
+        if (!line.empty()) {
+            has_staged_files = true;
+            break;
+        }
+    }
+    index_file.close();
+
+    if (has_staged_files) {
+        std::cout << "\nChanges to be committed:" << std::endl;
+        std::ifstream index_file_read(".minigit/index");
+        while (std::getline(index_file_read, line)) {
+            if (!line.empty()) {
+                size_t space_pos = line.find(" ");
+                if (space_pos != std::string::npos) {
+                    std::string filename = line.substr(space_pos + 1);
+                    std::cout << "  new file:   " << filename << std::endl;
+                }
+            }
+        }
+        index_file_read.close();
+    } else {
+        std::cout << "\nnothing to commit, working tree clean" << std::endl;
+    }
+}
+
 int main(int argc, char* argv[])
 {
     if (argc < 2)
@@ -731,10 +805,14 @@ int main(int argc, char* argv[])
     {
         if (argc < 3)
         {
-            std::cerr << "Usage: minigit branch <branch-name>\n";
-            return 1;
+            // No arguments provided - list branches
+            list_branches();
         }
-        branch(argv[2]);
+        else
+        {
+            // Branch name provided - create new branch
+            branch(argv[2]);
+        }
     }
     else if (command == "checkout")
     {
@@ -762,6 +840,10 @@ int main(int argc, char* argv[])
             return 1;
         }
         diff(argv[2], argv[3]);
+    }
+    else if (command == "status")
+    {
+        status();
     }
     else
     {
