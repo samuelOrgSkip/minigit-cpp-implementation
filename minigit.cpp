@@ -248,8 +248,8 @@ void commit(const std::string& message)
     std::time_t current_time = std::chrono::system_clock::to_time_t(now);
     std::stringstream ss;
     ss << std::put_time(std::localtime(&current_time), "%c");
-    commit_content += "\nauthor Manus AI <manus@ai.com> " + ss.str();
-    commit_content += "\ncommitter Manus AI <manus@ai.com> " + ss.str();
+    commit_content += "\nauthor Samuel Godad and Firamit Megersa <godadsamuel@gmail.com> " + ss.str();
+    commit_content += "\ncommitter Samuel Godad and Firamit Megersa <godadsamuel@gmail.com> " + ss.str();
     commit_content += "\n\n" + message + "\n";
 
     // Add staged files to commit content (simplified - in a real Git, this would involve creating a tree object)
@@ -581,8 +581,8 @@ void merge(const std::string& branch_to_merge)
     std::time_t current_time = std::chrono::system_clock::to_time_t(now);
     std::stringstream ss;
     ss << std::put_time(std::localtime(&current_time), "%c");
-    commit_content += "\nauthor Manus AI <manus@ai.com> " + ss.str();
-    commit_content += "\ncommitter Manus AI <manus@ai.com> " + ss.str();
+    commit_content += "\nauthor Samuel Godad and Firamit Megersa <godadsamuel@gmail.com> " + ss.str();
+    commit_content += "\ncommitter Samuel Godad and Firamit Megersa <godadsamuel@gmail.com> " + ss.str();
     commit_content += "\n\n" + merge_commit_message + "\n";
 
     // Add current working directory files to commit content (simplified)
