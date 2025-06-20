@@ -25,7 +25,7 @@ MiniGit is a simplified version of the Git version control system, implemented i
    ```
 3. Run MiniGit commands:
    ```bash
-   ./minigit <command> [args]
+   ./minigit 
    ```
 
 ## Implementation Details
@@ -68,9 +68,14 @@ Ensure you have a C++17 compatible compiler installed (g++, clang++, etc.).
 g++ -std=c++17 minigit.cpp sha1.cpp -o minigit
 ```
 
-### Step 2: Initialize a Repository
+### Step 2: Create Demo Workspace and Initialize Repository
 ```bash
-./minigit init
+# Create a separate demo workspace (recommended)
+mkdir demo_workspace
+cd demo_workspace
+
+# Initialize repository
+../minigit init
 ```
 This creates a `.minigit/` directory with the following structure:
 - `objects/` - Stores file contents (blobs) and commit objects
@@ -85,27 +90,27 @@ echo 'Hello, this is my first file!' > file1.txt
 echo 'This is the second file content.' > file2.txt
 
 # Add files to staging area
-./minigit add file1.txt
-./minigit add file2.txt
+../minigit add file1.txt
+../minigit add file2.txt
 ```
 
 ### Step 4: Make Your First Commit
 ```bash
-./minigit commit -m 'Initial commit with two files'
+../minigit commit -m 'Initial commit with two files'
 ```
 
 ### Step 5: View Commit History
 ```bash
-./minigit log
+../minigit log
 ```
 
 ### Step 6: Create and Switch to a New Branch
 ```bash
 # Create a new branch
-./minigit branch feature-branch
+../minigit branch feature-branch
 
 # Switch to the new branch
-./minigit checkout feature-branch
+../minigit checkout feature-branch
 ```
 
 ### Step 7: Make Changes in the Feature Branch
@@ -117,27 +122,27 @@ echo 'This is a new feature file!' > feature.txt
 echo 'Hello, this is my UPDATED first file!' > file1.txt
 
 # Stage and commit changes
-./minigit add feature.txt
-./minigit add file1.txt
-./minigit commit -m 'Added feature file and updated file1'
+../minigit add feature.txt
+../minigit add file1.txt
+../minigit commit -m 'Added feature file and updated file1'
 ```
 
 ### Step 8: Switch Back to Master and Make Different Changes
 ```bash
 # Switch back to master
-./minigit checkout master
+../minigit checkout master
 
 # Create a master-specific file
 echo 'This is a master branch addition!' > master-only.txt
 
 # Stage and commit
-./minigit add master-only.txt
-./minigit commit -m 'Added master-only file'
+../minigit add master-only.txt
+../minigit commit -m 'Added master-only file'
 ```
 
 ### Step 9: Merge the Feature Branch
 ```bash
-./minigit merge feature-branch
+../minigit merge feature-branch
 ```
 
 ### Step 10: Verify the Merge
@@ -149,7 +154,7 @@ cat feature.txt     # Should show feature content
 cat master-only.txt # Should show master content
 
 # View complete history
-./minigit log
+../minigit log
 ```
 
 ### Step 11: Demonstrate Diff Functionality (Bonus)
@@ -159,13 +164,13 @@ echo 'Original content' > original.txt
 echo 'Modified content with changes' > modified.txt
 
 # Show differences
-./minigit diff original.txt modified.txt
+../minigit diff original.txt modified.txt
 ```
 
 ### Step 12: Checkout Specific Commit (Detached HEAD)
 ```bash
 # Get a commit hash from log and checkout
-./minigit checkout <commit-hash>
+../minigit checkout <commit-hash>
 
 # Verify detached HEAD state
 cat .minigit/HEAD
@@ -243,6 +248,39 @@ committer Samuel Godad and Firamit Megersa <godadsamuel@gmail.com> <timestamp>
    - File changed in both: report conflict
 4. Create merge commit with dual parents
 
+## Workspace Management
+
+### Creating Demo Workspaces
+```bash
+# Always create demos in separate folders
+mkdir demo_workspace
+cd demo_workspace
+../minigit init
+# ... do your demo work ...
+```
+
+### Cleaning Up
+```bash
+# Remove demo workspaces when done
+cd ..
+rm -rf demo_workspace
+```
+
+### Project Structure
+```
+minigit_project/
+├── README.md              # Documentation
+├── minigit.cpp           # Main implementation  
+├── sha1.cpp              # SHA-1 implementation
+├── sha1.h                # SHA-1 header
+├── minigit               # Compiled executable
+├── .gitignore            # Git ignore patterns
+└── demo_workspace/       # Temporary demo folder (auto-ignored)
+    ├── .minigit/         # Demo repository
+    ├── file1.txt         # Demo files
+    └── ...
+```
+
 ## Troubleshooting
 
 ### Compilation Issues
@@ -252,6 +290,11 @@ committer Samuel Godad and Firamit Megersa <godadsamuel@gmail.com> <timestamp>
 ### Runtime Issues
 - Verify `.minigit/` directory exists before running commands
 - Check file permissions for object storage
+
+### Workspace Issues
+- Demo folders are automatically ignored by `.gitignore`
+- Always work in separate demo folders to keep project clean
+- Remove demo folders before final submission
 
 ## Future Improvements
 - Implement a proper tree object model for better efficiency and consistency.
